@@ -30,6 +30,8 @@ class CompileInstallArchiveTests(unittest.TestCase):
             source_package, source_image = load_package(source)
             output_package, output_image = load_package(output)
             self.assertNotEqual(source_package.image_sha256, output_package.image_sha256)
+            self.assertNotIn(b"\r", (output / "pet.json").read_bytes())
+            self.assertNotIn(b"\r", (output / "petease-provenance.json").read_bytes())
             for column in range(6):
                 self.assertEqual(
                     get_cell(output_image, 0, column).tobytes(),
@@ -96,6 +98,8 @@ class CompileInstallArchiveTests(unittest.TestCase):
             self.assertEqual(first.read_bytes(), second.read_bytes())
             self.assertEqual(result_one["sha256"], result_two["sha256"])
             self.assertTrue(verify_archive(first)["ok"])
+            with zipfile.ZipFile(first) as archive:
+                self.assertTrue(all(info.create_system == 3 for info in archive.infolist()))
             with self.assertRaisesRegex(ValueError, ".codex-pet"):
                 package_pet(source, root / "wrong.zip")
 

@@ -67,6 +67,7 @@ def package_pet(
         ) as archive:
             for source, name in sorted(selected, key=lambda item: item[1]):
                 info = zipfile.ZipInfo(name, date_time=ARCHIVE_TIMESTAMP)
+                info.create_system = 3
                 info.compress_type = zipfile.ZIP_DEFLATED
                 info.external_attr = 0o100644 << 16
                 archive.writestr(info, source.read_bytes())

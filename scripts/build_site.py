@@ -11,6 +11,7 @@ if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
 from petease.audit import audit_package  # noqa: E402
+from petease.model import __version__  # noqa: E402
 from petease.report import write_json_report  # noqa: E402
 
 
@@ -32,12 +33,14 @@ def main() -> int:
     )
     report = audit_package(ROOT / "pet")
     reduced = audit_package(ROOT / "pet-reduced-motion")
+    report["package"]["root"] = "pet"
+    reduced["package"]["root"] = "pet-reduced-motion"
     write_json_report(report, assets / "audit.json")
     write_json_report(reduced, assets / "audit-reduced.json")
     summary = {
         "normal": report["summary"],
         "reduced": reduced["summary"],
-        "version": "0.1.0",
+        "version": __version__,
     }
     (assets / "summary.json").write_text(
         json.dumps(summary, ensure_ascii=False, indent=2) + "\n",

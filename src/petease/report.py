@@ -12,6 +12,7 @@ def write_json_report(report: dict[str, Any], path: str | Path) -> None:
     destination.write_text(
         json.dumps(report, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
+        newline="\n",
     )
 
 
@@ -94,4 +95,4 @@ def write_html_report(report: dict[str, Any], path: str | Path) -> None:
 </body>
 </html>
 """
-    destination.write_text(document, encoding="utf-8")
+    destination.write_text(document, encoding="utf-8", newline="\n")

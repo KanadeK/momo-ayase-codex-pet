@@ -90,5 +90,9 @@ The compiler records every selection and both atlas checksums.
 ## Reproducibility
 
 `.codex-pet` entry order, timestamps, permissions, compression level, and input
-set are fixed. The release gate builds twice in separate temporary directories
-and compares SHA-256 hashes.
+set are fixed. ZIP creator metadata is pinned to Unix semantics, generated text
+uses LF, and release reports contain portable package roots instead of machine
+paths. Python distributions are built from an explicit source whitelist and
+then rewritten with deterministic wheel records and USTAR metadata. The release
+gate compares two `.codex-pet` builds, while the release-builder regression
+tests simulate Windows and Unix wheel/sdist inputs.

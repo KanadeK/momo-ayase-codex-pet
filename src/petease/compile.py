@@ -115,6 +115,7 @@ def compile_reduced_motion(
     (destination / "pet.json").write_text(
         json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
+        newline="\n",
     )
     for optional_name in ("FAN_ART_NOTICE.md", "ASSET_LICENSE.md", "NOTICE.md"):
         source = package.root / optional_name
@@ -142,5 +143,6 @@ def compile_reduced_motion(
     (destination / "petease-provenance.json").write_text(
         json.dumps(provenance, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
+        newline="\n",
     )
     return provenance

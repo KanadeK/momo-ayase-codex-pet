@@ -105,6 +105,20 @@ petease verify-archive build-b/momo.codex-pet
 If bytes differ, compare entry names and source file bytes. Do not regenerate
 the atlas between builds. The release gate treats any mismatch as a failure.
 
+For full `scripts/build_release.py` mismatches:
+
+1. compare `SHA256SUMS.txt` from a Windows build and the Linux CI artifact;
+2. inspect ZIP `create_system`, timestamps, permissions, and entry order;
+3. check JSON/HTML for absolute workspace paths and CRLF bytes;
+4. inspect wheel `RECORD` and sdist uid/gid/mode/mtime fields;
+5. make sure ignored directories under `src/` are not entering package
+   discovery.
+
+The release builder deliberately copies only declared Python distribution
+inputs into a clean temporary source tree, canonicalizes LF text, rebuilds the
+wheel record, and fixes ZIP/USTAR metadata. Do not weaken that whitelist to
+silence a mismatch.
+
 ## CI-only failure
 
 Reproduce the failing operating-system/Python combination shown in the job

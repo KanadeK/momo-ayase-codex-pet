@@ -7,7 +7,7 @@
 4. Confirm no commit contains a `Co-authored-by` trailer.
 5. Commit the exact source state and push `main`.
 6. Wait for CI and Pages to pass on that commit.
-7. Tag `v0.1.0` at the verified commit and push the tag.
+7. Tag the verified commit with the intended `vX.Y.Z` version and push it.
 8. Build release assets from the tagged checkout with
    `python scripts/build_release.py --force --output dist/release`.
 9. Create the GitHub Release and upload every file in `dist/release/`.

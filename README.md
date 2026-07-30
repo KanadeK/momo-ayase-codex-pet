@@ -44,12 +44,12 @@ and reproducible packages.
 
 ## Install the pet
 
-Download `momo-ayase-codex-pet-v0.1.0.zip` and
-`petease-0.1.0-py3-none-any.whl` from the same Release, extract the pet bundle,
+Download `momo-ayase-codex-pet-v0.1.1.zip` and
+`petease-0.1.1-py3-none-any.whl` from the same Release, extract the pet bundle,
 then:
 
 ```powershell
-py -m pip install .\petease-0.1.0-py3-none-any.whl
+py -m pip install .\petease-0.1.1-py3-none-any.whl
 petease install .\pet --dry-run
 petease install .\pet
 ```

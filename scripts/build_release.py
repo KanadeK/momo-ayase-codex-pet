@@ -1,14 +1,19 @@
 from __future__ import annotations
 
 import argparse
+import base64
+import csv
+import gzip
 import hashlib
+import io
 import os
 import shutil
 import subprocess
 import sys
+import tarfile
 import tempfile
 import zipfile
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "src"
@@ -22,6 +27,18 @@ from petease.report import write_html_report, write_json_report  # noqa: E402
 from petease.sarif import write_sarif_report  # noqa: E402
 
 MARKER = ".petease-release-dir"
+SOURCE_DATE_EPOCH = 1767225600
+TEXT_SUFFIXES = {
+    ".cfg",
+    ".json",
+    ".md",
+    ".py",
+    ".toml",
+    ".txt",
+    ".yaml",
+    ".yml",
+}
+TEXT_NAMES = {"LICENSE", "METADATA", "PKG-INFO", "RECORD", "WHEEL"}
 
 
 def sha256(path: Path) -> str:
@@ -30,6 +47,23 @@ def sha256(path: Path) -> str:
         for block in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(block)
     return digest.hexdigest()
+
+
+def canonical_text(data: bytes) -> bytes:
+    return data.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+
+
+def is_text_name(name: str) -> bool:
+    path = PurePosixPath(name)
+    return path.name in TEXT_NAMES or path.suffix.lower() in TEXT_SUFFIXES
+
+
+def zip_info(name: str) -> zipfile.ZipInfo:
+    info = zipfile.ZipInfo(name, date_time=ARCHIVE_TIMESTAMP)
+    info.create_system = 3
+    info.compress_type = zipfile.ZIP_DEFLATED
+    info.external_attr = 0o100644 << 16
+    return info
 
 
 def prepare_output(output: Path, force: bool) -> None:
@@ -48,10 +82,7 @@ def prepare_output(output: Path, force: bool) -> None:
 
 
 def add_file(archive: zipfile.ZipFile, source: Path, name: str) -> None:
-    info = zipfile.ZipInfo(name, date_time=ARCHIVE_TIMESTAMP)
-    info.compress_type = zipfile.ZIP_DEFLATED
-    info.external_attr = 0o100644 << 16
-    archive.writestr(info, source.read_bytes())
+    archive.writestr(zip_info(name), source.read_bytes())
 
 
 def build_bundle(output: Path) -> Path:
@@ -77,15 +108,148 @@ def build_bundle(output: Path) -> Path:
     return destination
 
 
+def canonicalize_wheel(path: Path) -> None:
+    with zipfile.ZipFile(path) as source:
+        names = source.namelist()
+        if len(names) != len(set(names)):
+            raise ValueError(f"Wheel contains duplicate entries: {path.name}")
+        entries = {
+            name: canonical_text(source.read(name)) if is_text_name(name) else source.read(name)
+            for name in names
+        }
+
+    record_names = [name for name in entries if name.endswith(".dist-info/RECORD")]
+    if len(record_names) != 1:
+        raise ValueError(f"Wheel must contain exactly one RECORD: {path.name}")
+    record_name = record_names[0]
+    entries.pop(record_name)
+
+    record = io.StringIO(newline="")
+    writer = csv.writer(record, lineterminator="\n")
+    for name in sorted(entries):
+        data = entries[name]
+        digest = base64.urlsafe_b64encode(hashlib.sha256(data).digest()).rstrip(b"=")
+        writer.writerow((name, f"sha256={digest.decode('ascii')}", len(data)))
+    writer.writerow((record_name, "", ""))
+    entries[record_name] = record.getvalue().encode("utf-8")
+
+    temporary = path.with_name(path.name + ".canonical")
+    if temporary.exists():
+        temporary.unlink()
+    try:
+        with zipfile.ZipFile(
+            temporary,
+            "w",
+            compression=zipfile.ZIP_DEFLATED,
+            compresslevel=9,
+        ) as destination:
+            for name in sorted(entries):
+                destination.writestr(zip_info(name), entries[name])
+        temporary.replace(path)
+    finally:
+        if temporary.exists():
+            temporary.unlink()
+
+
+def canonicalize_sdist(path: Path) -> None:
+    members: list[tuple[str, bool, bytes]] = []
+    with tarfile.open(path, "r:gz") as source:
+        for member in source.getmembers():
+            if member.isdir():
+                members.append((member.name, True, b""))
+                continue
+            if not member.isfile():
+                raise ValueError(f"Unsupported sdist member type: {member.name}")
+            extracted = source.extractfile(member)
+            if extracted is None:
+                raise ValueError(f"Could not read sdist member: {member.name}")
+            data = extracted.read()
+            if is_text_name(member.name):
+                data = canonical_text(data)
+            members.append((member.name, False, data))
+
+    temporary = path.with_name(path.name + ".canonical")
+    if temporary.exists():
+        temporary.unlink()
+    try:
+        with temporary.open("wb") as raw:
+            with gzip.GzipFile(
+                filename="",
+                mode="wb",
+                compresslevel=9,
+                fileobj=raw,
+                mtime=SOURCE_DATE_EPOCH,
+            ) as compressed:
+                with tarfile.open(
+                    fileobj=compressed,
+                    mode="w",
+                    format=tarfile.USTAR_FORMAT,
+                ) as destination:
+                    for name, is_directory, data in sorted(members):
+                        info = tarfile.TarInfo(name)
+                        info.mtime = SOURCE_DATE_EPOCH
+                        info.uid = 0
+                        info.gid = 0
+                        info.uname = ""
+                        info.gname = ""
+                        if is_directory:
+                            info.type = tarfile.DIRTYPE
+                            info.mode = 0o755
+                            destination.addfile(info)
+                        else:
+                            info.mode = 0o644
+                            info.size = len(data)
+                            destination.addfile(info, io.BytesIO(data))
+        temporary.replace(path)
+    finally:
+        if temporary.exists():
+            temporary.unlink()
+
+
+def python_distribution_sources() -> list[Path]:
+    sources = [
+        ROOT / "LICENSE",
+        ROOT / "NOTICE.md",
+        ROOT / "README.md",
+        ROOT / "pyproject.toml",
+    ]
+    sources.extend(sorted((ROOT / "src" / "petease").glob("*.py")))
+    sources.extend(sorted((ROOT / "tests").glob("*.py")))
+    return sources
+
+
 def build_python_distributions(output: Path) -> None:
+    output = output.resolve()
     environment = os.environ.copy()
-    environment["SOURCE_DATE_EPOCH"] = "1767225600"
-    subprocess.run(
-        [sys.executable, "-m", "build", "--no-isolation", "--outdir", str(output)],
-        cwd=ROOT,
-        env=environment,
-        check=True,
-    )
+    environment["SOURCE_DATE_EPOCH"] = str(SOURCE_DATE_EPOCH)
+    environment["PYTHONUTF8"] = "1"
+    with tempfile.TemporaryDirectory(prefix="petease-python-dist-") as temporary:
+        staging = Path(temporary) / "source"
+        staging.mkdir()
+        for source in python_distribution_sources():
+            if not source.is_file() or source.is_symlink():
+                raise ValueError(f"Unexpected Python distribution input: {source}")
+            destination = staging / source.relative_to(ROOT)
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            data = source.read_bytes()
+            if is_text_name(source.name):
+                data = canonical_text(data)
+            destination.write_bytes(data)
+            os.utime(destination, (SOURCE_DATE_EPOCH, SOURCE_DATE_EPOCH))
+
+        subprocess.run(
+            [sys.executable, "-m", "build", "--no-isolation", "--outdir", str(output)],
+            cwd=staging,
+            env=environment,
+            check=True,
+        )
+
+    wheels = list(output.glob(f"petease-{__version__}-*.whl"))
+    sdists = list(output.glob(f"petease-{__version__}.tar.gz"))
+    if len(wheels) != 1 or len(sdists) != 1:
+        raise ValueError("Python build did not produce exactly one wheel and one sdist")
+    canonicalize_wheel(wheels[0])
+    canonicalize_sdist(sdists[0])
 
 
 def write_checksums(output: Path) -> Path:
@@ -108,6 +272,7 @@ def build(output: Path, force: bool = False) -> list[Path]:
     report = audit_package(ROOT / "pet")
     if not report["summary"]["ok"]:
         raise ValueError("Cannot release a pet with structural audit errors")
+    report["package"]["root"] = "pet"
     write_json_report(report, output / "audit.json")
     write_html_report(report, output / "audit.html")
     write_sarif_report(report, output / "audit.sarif")

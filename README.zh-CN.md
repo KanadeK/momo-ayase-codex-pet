@@ -25,11 +25,11 @@
 
 ## 安装宠物
 
-从同一个 GitHub Release 下载 `momo-ayase-codex-pet-v0.1.0.zip` 和
-`petease-0.1.0-py3-none-any.whl`，解压宠物包后执行：
+从同一个 GitHub Release 下载 `momo-ayase-codex-pet-v0.1.1.zip` 和
+`petease-0.1.1-py3-none-any.whl`，解压宠物包后执行：
 
 ```powershell
-py -m pip install .\petease-0.1.0-py3-none-any.whl
+py -m pip install .\petease-0.1.1-py3-none-any.whl
 petease install .\pet --dry-run
 petease install .\pet
 ```

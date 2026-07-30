@@ -63,11 +63,11 @@ petease verify-archive dist/momo-ayase.codex-pet
 
 ## Expected release files
 
-- `momo-ayase-v0.1.0.codex-pet`
-- `momo-ayase-reduced-v0.1.0.codex-pet`
-- `momo-ayase-codex-pet-v0.1.0.zip`
-- `petease-0.1.0-py3-none-any.whl`
-- `petease-0.1.0.tar.gz`
+- `momo-ayase-v0.1.1.codex-pet`
+- `momo-ayase-reduced-v0.1.1.codex-pet`
+- `momo-ayase-codex-pet-v0.1.1.zip`
+- `petease-0.1.1-py3-none-any.whl`
+- `petease-0.1.1.tar.gz`
 - `audit.json`
 - `audit.html`
 - `audit.sarif`
@@ -82,10 +82,12 @@ Local success is not public delivery. After pushing the tag:
 2. Confirm CI, security scan, Pages, and release workflows are green.
 3. Download every release asset from GitHub.
 4. Compare downloaded hashes with `SHA256SUMS.txt`.
-5. Confirm the tag and release both point to the intended commit.
-6. Inspect `git shortlog -sne HEAD` and the GitHub contributors page.
-7. Search the commit history for `Co-authored-by` trailers.
-8. Open the published preview and exercise row, frame, speed, and
+5. Compare the downloaded `SHA256SUMS.txt` with a clean local release build;
+   Windows and Linux must produce the same asset hashes.
+6. Confirm the tag and release both point to the intended commit.
+7. Inspect `git shortlog -sne HEAD` and the GitHub contributors page.
+8. Search the commit history for `Co-authored-by` trailers.
+9. Open the published preview and exercise row, frame, speed, and
    reduced-motion controls.
 
 ## Visual acceptance
