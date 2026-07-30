@@ -213,8 +213,12 @@ def python_distribution_sources() -> list[Path]:
         ROOT / "README.md",
         ROOT / "pyproject.toml",
     ]
-    sources.extend(sorted((ROOT / "src" / "petease").glob("*.py")))
-    sources.extend(sorted((ROOT / "tests").glob("*.py")))
+    sources.extend(
+        sorted((ROOT / "src" / "petease").glob("*.py"), key=lambda path: path.name.casefold())
+    )
+    sources.extend(
+        sorted((ROOT / "tests").glob("*.py"), key=lambda path: path.name.casefold())
+    )
     return sources
 
 
@@ -254,9 +258,12 @@ def build_python_distributions(output: Path) -> None:
 
 def write_checksums(output: Path) -> Path:
     assets = sorted(
-        path
-        for path in output.iterdir()
-        if path.is_file() and path.name not in {MARKER, "SHA256SUMS.txt"}
+        (
+            path
+            for path in output.iterdir()
+            if path.is_file() and path.name not in {MARKER, "SHA256SUMS.txt"}
+        ),
+        key=lambda path: (path.name.casefold(), path.name),
     )
     destination = output / "SHA256SUMS.txt"
     destination.write_text(
@@ -293,7 +300,10 @@ def build(output: Path, force: bool = False) -> list[Path]:
     build_python_distributions(output)
     shutil.copy2(ROOT / "DEPENDENCIES.md", output / "DEPENDENCIES.md")
     write_checksums(output)
-    return sorted(path for path in output.iterdir() if path.is_file() and path.name != MARKER)
+    return sorted(
+        (path for path in output.iterdir() if path.is_file() and path.name != MARKER),
+        key=lambda path: (path.name.casefold(), path.name),
+    )
 
 
 def main() -> int:

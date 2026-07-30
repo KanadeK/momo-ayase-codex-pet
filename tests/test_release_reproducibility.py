@@ -13,6 +13,7 @@ from scripts.build_release import (
     canonicalize_sdist,
     canonicalize_wheel,
     python_distribution_sources,
+    write_checksums,
 )
 
 
@@ -103,6 +104,17 @@ class ReleaseReproducibilityTests(unittest.TestCase):
         relative = [path.as_posix() for path in python_distribution_sources()]
         self.assertTrue(any(path.endswith("/src/petease/archive.py") for path in relative))
         self.assertFalse(any("petprobe" in path for path in relative))
+
+    def test_checksum_order_is_independent_of_platform_path_ordering(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "DEPENDENCIES.md").write_text("upper", encoding="utf-8")
+            (root / "audit.json").write_text("lower", encoding="utf-8")
+
+            checksums = write_checksums(root).read_text(encoding="utf-8").splitlines()
+
+            self.assertTrue(checksums[0].endswith("  audit.json"))
+            self.assertTrue(checksums[1].endswith("  DEPENDENCIES.md"))
 
 
 if __name__ == "__main__":
