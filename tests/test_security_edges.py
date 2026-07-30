@@ -100,7 +100,7 @@ class PackageValidationEdgeTests(unittest.TestCase):
             output = Path(temporary) / "copy.webp"
             save_webp(image, output)
             self.assertEqual(len(sha256_file(output)), 64)
-            self.assertEqual(package.spritesheet_path, assets / "atlas.png")
+            self.assertEqual(package.spritesheet_path, (assets / "atlas.png").resolve())
             archive = Path(temporary) / "nested.codex-pet"
             result = package_pet(root, archive)
             self.assertIn("assets/atlas.png", result["entries"])
