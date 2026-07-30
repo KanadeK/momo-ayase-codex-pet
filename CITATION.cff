@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If PetEase supports your research or tooling, please cite this release."
+title: "Momo Ayase for Codex and PetEase"
+type: software
+authors:
+  - family-names: "KanadeK"
+version: 0.1.0
+date-released: 2026-07-31
+license: MIT
+repository-code: "https://github.com/KanadeK/momo-ayase-codex-pet"
+url: "https://kanadek.github.io/momo-ayase-codex-pet/"

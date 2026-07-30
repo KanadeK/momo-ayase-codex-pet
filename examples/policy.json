@@ -1,0 +1,11 @@
+{
+  "thresholds": {
+    "area_delta_ratio_warning": 0.24,
+    "changed_area_ratio_warning": 0.38,
+    "centroid_shift_px_warning": 18.0,
+    "edge_contact_error": 0,
+    "luminance_delta_warning": 0.18,
+    "mean_pixel_delta_warning": 0.24,
+    "transparent_rgb_error": 0
+  }
+}

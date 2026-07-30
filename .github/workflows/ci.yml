@@ -1,0 +1,85 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: ${{ matrix.os }} / Python ${{ matrix.python }}
+    runs-on: ${{ matrix.os }}
+    env:
+      UV_PYTHON: ${{ matrix.python }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            python: "3.12"
+          - os: windows-latest
+            python: "3.10"
+          - os: macos-latest
+            python: "3.13"
+          - os: ubuntu-latest
+            python: "3.11"
+
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Install
+        run: uv sync --locked --extra dev
+      - name: Lint
+        run: uv run ruff check .
+      - name: Tests and coverage
+        run: |
+          uv run coverage run -m unittest discover
+          uv run coverage report
+          uv run coverage xml
+      - name: Full release gate
+        run: uv run python scripts/release_gate.py --json build/release-gate.json
+      - name: Generate audit artifacts
+        run: >-
+          uv run petease audit pet
+          --json-out build/audit.json
+          --html-out build/audit.html
+          --sarif-out build/audit.sarif
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: audit-${{ matrix.os }}-py${{ matrix.python }}
+          path: |
+            build/audit.json
+            build/audit.html
+            build/audit.sarif
+            build/release-gate.json
+            coverage.xml
+          if-no-files-found: warn
+
+  package:
+    runs-on: ubuntu-latest
+    needs: test
+    env:
+      UV_PYTHON: "3.12"
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Install uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - run: uv sync --locked --extra dev
+      - run: uv run python scripts/build_release.py --force --output dist/release
+      - uses: actions/upload-artifact@v7
+        with:
+          name: release-assets
+          path: dist/release/
+          if-no-files-found: error

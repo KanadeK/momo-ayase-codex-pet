@@ -1,0 +1,125 @@
+{
+  "schema_version": 1,
+  "reviewer": "independent-final-visual-qa-approved-artifacts",
+  "overall_verdict": "pass_with_review_warnings",
+  "hard_cardinals_ok": true,
+  "warnings_preserved": [
+    "045 and 315 have weak/opposite horizontal blind cues.",
+    "067.5 and 112.5 have ambiguous vertical blind cues.",
+    "All four cardinal directions passed the independent hard gates."
+  ],
+  "directions": {
+    "000": {
+      "expected": "up",
+      "observed_horizontal": "centered",
+      "observed_vertical": "raised chin and high irises",
+      "verdict": "pass",
+      "reason": "The up cardinal is unmistakable and passed the hard blind gate."
+    },
+    "022.5": {
+      "expected": "up-right",
+      "observed_horizontal": "slight screen-right face and pupil aim",
+      "observed_vertical": "raised chin and high irises",
+      "verdict": "pass",
+      "reason": "Both axes are readable and the pose advances naturally from 000."
+    },
+    "045": {
+      "expected": "up-right",
+      "observed_horizontal": "labeled pose trends right; blind majority read the subtle eye cue left",
+      "observed_vertical": "raised eyes and chin",
+      "verdict": "warning",
+      "reason": "The ordered loop supports the quadrant, but the opposite horizontal blind result is preserved."
+    },
+    "067.5": {
+      "expected": "up-right",
+      "observed_horizontal": "nose, face opening, and pupils aim screen-right",
+      "observed_vertical": "shallow upward cue",
+      "verdict": "warning",
+      "reason": "Horizontal direction is clear; blind vertical evidence was ambiguous."
+    },
+    "090": {
+      "expected": "right",
+      "observed_horizontal": "profile, nose, and pupils aim screen-right",
+      "observed_vertical": "approximately level",
+      "verdict": "pass",
+      "reason": "The right cardinal is unmistakable and passed the hard blind gate."
+    },
+    "112.5": {
+      "expected": "down-right",
+      "observed_horizontal": "face and pupils aim screen-right",
+      "observed_vertical": "shallow downward cue",
+      "verdict": "warning",
+      "reason": "The right axis is clear; blind vertical evidence was ambiguous."
+    },
+    "135": {
+      "expected": "down-right",
+      "observed_horizontal": "nose, face opening, and pupils aim screen-right",
+      "observed_vertical": "lowered gaze and chin",
+      "verdict": "pass",
+      "reason": "Both axes are independently readable."
+    },
+    "157.5": {
+      "expected": "down-right",
+      "observed_horizontal": "face and pupils remain screen-right",
+      "observed_vertical": "chin and eyes are lowered",
+      "verdict": "warning",
+      "reason": "Both axes passed blind review; the following 157.5-to-180 transition remains a documented continuity outlier."
+    },
+    "180": {
+      "expected": "down",
+      "observed_horizontal": "centered",
+      "observed_vertical": "tucked chin and lowered irises",
+      "verdict": "pass",
+      "reason": "The down cardinal is unmistakable and passed the hard blind gate."
+    },
+    "202.5": {
+      "expected": "down-left",
+      "observed_horizontal": "face, nose, and pupils shift screen-left",
+      "observed_vertical": "chin and eyes remain lowered",
+      "verdict": "pass",
+      "reason": "Both axes passed blind review."
+    },
+    "225": {
+      "expected": "down-left",
+      "observed_horizontal": "head turn and pupils aim screen-left",
+      "observed_vertical": "lowered face and gaze",
+      "verdict": "pass",
+      "reason": "Both axes are independently readable."
+    },
+    "247.5": {
+      "expected": "down-left",
+      "observed_horizontal": "profile and pupils aim screen-left",
+      "observed_vertical": "shallow but readable lowered gaze",
+      "verdict": "pass",
+      "reason": "Both axes passed blind review."
+    },
+    "270": {
+      "expected": "left",
+      "observed_horizontal": "profile, nose, and pupils aim screen-left",
+      "observed_vertical": "approximately level",
+      "verdict": "pass",
+      "reason": "The left cardinal is unmistakable and passed the hard blind gate."
+    },
+    "292.5": {
+      "expected": "up-left",
+      "observed_horizontal": "face and pupils aim screen-left",
+      "observed_vertical": "raised gaze",
+      "verdict": "pass",
+      "reason": "Both axes passed blind review."
+    },
+    "315": {
+      "expected": "up-left",
+      "observed_horizontal": "labeled pose trends left; blind majority read the subtle eye cue right",
+      "observed_vertical": "raised chin and irises",
+      "verdict": "warning",
+      "reason": "The ordered loop supports the quadrant, but the opposite horizontal blind result is preserved."
+    },
+    "337.5": {
+      "expected": "up-left",
+      "observed_horizontal": "pupils and face retain a slight screen-left aim",
+      "observed_vertical": "raised chin and high irises",
+      "verdict": "warning",
+      "reason": "Both axes passed blind review; the 337.5-to-000 closure remains a documented continuity outlier."
+    }
+  }
+}

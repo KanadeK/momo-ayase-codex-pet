@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="A complete Momo Ayase Codex v2 pet and PetEase, an open source motion accessibility toolkit."
+    >
+    <meta name="theme-color" content="#f6f3f5">
+    <meta property="og:title" content="Momo Ayase for Codex with PetEase">
+    <meta
+      property="og:description"
+      content="Play every real pet frame, inspect sixteen directions, and audit any Codex v2 atlas."
+    >
+    <meta property="og:type" content="website">
+    <title>Momo Ayase for Codex with PetEase</title>
+    <link rel="stylesheet" href="styles.css?v=0.1.0-r2">
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareSourceCode",
+        "name": "Momo Ayase Codex Pet with PetEase",
+        "codeRepository": "https://github.com/KanadeK/momo-ayase-codex-pet",
+        "programmingLanguage": "Python",
+        "license": "https://opensource.org/license/mit"
+      }
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="site-header">
+      <a class="brand" href="#content" aria-label="Momo Ayase and PetEase home">
+        <span class="brand-mark" aria-hidden="true">M</span>
+        <span>Momo + PetEase</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="#lab">Frame lab</a>
+        <a href="#tool">PetEase</a>
+        <a href="https://github.com/KanadeK/momo-ayase-codex-pet">GitHub</a>
+      </nav>
+    </header>
+
+    <main id="content">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Unofficial DANDADAN fan pet</p>
+          <h1><span>Momo moves.</span><br>PetEase keeps score.</h1>
+          <p class="hero-summary">
+            Momo animates. PetEase proves every frame is safe, complete, and reproducible.
+          </p>
+          <div class="hero-actions">
+            <a
+              class="button primary"
+              href="codex://pets/install?name=Momo%20Ayase&amp;imageUrl=https%3A%2F%2Fraw.githubusercontent.com%2FKanadeK%2Fmomo-ayase-codex-pet%2Fmain%2Fpet%2Fspritesheet.webp&amp;spriteVersionNumber=2"
+            >
+              Install in Codex
+            </a>
+            <a class="button secondary" href="#lab">Open frame lab</a>
+            <a class="button secondary" href="https://github.com/KanadeK/momo-ayase-codex-pet">
+              View source
+            </a>
+          </div>
+        </div>
+
+        <div class="hero-visual" aria-labelledby="hero-status">
+          <div class="canvas-shell hero-canvas-shell">
+            <div class="skeleton" id="hero-skeleton" aria-hidden="true"></div>
+            <canvas id="hero-canvas" width="384" height="416">
+              Momo Ayase idle animation preview.
+            </canvas>
+          </div>
+          <p id="hero-status" class="asset-status" role="status">Loading the release atlas.</p>
+        </div>
+      </section>
+
+      <section class="facts" aria-label="Pet contract facts">
+        <div><strong>9</strong><span>animated states</span></div>
+        <div><strong>16</strong><span>look directions</span></div>
+        <div><strong>73</strong><span>required cells</span></div>
+        <div><strong>8 × 11</strong><span>v2 atlas grid</span></div>
+      </section>
+
+      <section class="lab" id="lab">
+        <div class="section-heading">
+          <h2>Inspect the shipped atlas</h2>
+          <p>
+            This canvas reads the same lossless WebP included in the release. No staged mockup,
+            no extracted demo GIF.
+          </p>
+        </div>
+
+        <div class="lab-layout">
+          <div class="canvas-shell lab-canvas-shell">
+            <div class="skeleton" id="lab-skeleton" aria-hidden="true"></div>
+            <canvas id="lab-canvas" width="384" height="416">
+              Interactive Momo Ayase pet frame.
+            </canvas>
+          </div>
+
+          <form class="controls" id="controls">
+            <div class="control-block">
+              <label for="state">State</label>
+              <select id="state" name="state">
+                <option value="idle">Idle</option>
+                <option value="running-right">Run right</option>
+                <option value="running-left">Run left</option>
+                <option value="waving">Wave</option>
+                <option value="jumping">Jump</option>
+                <option value="failed">Failed</option>
+                <option value="waiting">Waiting</option>
+                <option value="running">Task running</option>
+                <option value="review">Review</option>
+                <option value="look">Look directions</option>
+              </select>
+            </div>
+
+            <div class="control-block" id="direction-block" hidden>
+              <label for="direction">Direction</label>
+              <select id="direction" name="direction"></select>
+            </div>
+
+            <div class="control-block">
+              <label for="speed">Playback speed <output id="speed-value">1.0×</output></label>
+              <input id="speed" name="speed" type="range" min="0.5" max="2" value="1" step="0.25">
+            </div>
+
+            <label class="check-control" for="reduce-motion">
+              <input id="reduce-motion" name="reduce-motion" type="checkbox">
+              <span>Use a still reduced-motion pose</span>
+            </label>
+
+            <div class="button-row">
+              <button class="button primary" id="play" type="button">Pause</button>
+              <button class="button secondary" id="previous" type="button">Previous frame</button>
+              <button class="button secondary" id="next" type="button">Next frame</button>
+            </div>
+
+            <p class="frame-readout" id="frame-readout" aria-live="polite">Idle, frame 1 of 6</p>
+            <p class="error-message" id="asset-error" role="alert" hidden>
+              The atlas could not load. Download the release or open this page through GitHub Pages.
+            </p>
+          </form>
+        </div>
+      </section>
+
+      <section class="tool" id="tool">
+        <div class="tool-copy">
+          <h2>The pet is fun. The audit is useful.</h2>
+          <p>
+            PetEase turns atlas quality into repeatable evidence for any Codex v2 pet.
+          </p>
+          <a class="text-link" href="https://github.com/KanadeK/momo-ayase-codex-pet#readme">
+            Read the complete workflow
+          </a>
+        </div>
+
+        <div class="capabilities">
+          <article>
+            <h3>Catch structural defects</h3>
+            <p>Unsafe paths, blank frames, occupied spare cells, clipping, and hidden RGB residue.</p>
+          </article>
+          <article>
+            <h3>Measure motion comfort</h3>
+            <p>Pixel, luminance, centroid, and scale changes for every adjacent frame pair.</p>
+          </article>
+          <article>
+            <h3>Compile a still edition</h3>
+            <p>Deterministic state medoids, preserved look cells, and checksum provenance.</p>
+          </article>
+          <article>
+            <h3>Install without guessing</h3>
+            <p>Dry-run plans, staging, checksum verification, backups, and automatic rollback.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="command-section">
+        <div>
+          <h2>One strict acceptance command</h2>
+          <p>Run tests, both pet builds, isolated install, and reproducibility checks locally.</p>
+        </div>
+        <pre><code>python scripts/release_gate.py --json build/release-gate.json</code></pre>
+      </section>
+    </main>
+
+    <footer>
+      <p>
+        Unofficial fan project. Character rights belong to their respective owners.
+        Software is MIT-licensed.
+      </p>
+      <a href="https://github.com/KanadeK/momo-ayase-codex-pet/blob/main/ASSET_LICENSE.md">
+        Artwork terms
+      </a>
+    </footer>
+
+    <script src="app.js?v=0.1.0-r2" defer></script>
+  </body>
+</html>

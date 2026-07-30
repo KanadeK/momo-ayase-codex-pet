@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "compiler": {
+    "name": "PetEase",
+    "version": "0.1.0"
+  },
+  "source": {
+    "id": "momo-ayase",
+    "spritesheet_sha256": "21ec4887ff256dcafaae7944e8b8b4973b267224cd1f2c0c11c432d5193ebaa8"
+  },
+  "output": {
+    "id": "momo-ayase-reduced-motion",
+    "spritesheet_sha256": "a6e7e9c238ceb064de823eb0910ca936f7deaefe746be3225837bdc722356bff"
+  },
+  "source_date_epoch": 1767225600,
+  "strategy": "Repeat one deterministic medoid pose per animated state; preserve all sixteen static look-direction cells.",
+  "selections": [
+    {
+      "row": 0,
+      "state": "idle",
+      "strategy": "repeat-state-medoid",
+      "selected_frame": 0
+    },
+    {
+      "row": 1,
+      "state": "running-right",
+      "strategy": "repeat-state-medoid",
+      "selected_frame": 5
+    },
+    {
+      "row": 2,
+      "state": "running-left",
+      "strategy": "repeat-state-medoid",
+      "selected_frame": 3
+    },
+    {
+      "row": 3,
+      "state": "waving",
+      "strategy": "repeat-state-medoid",
+      "selected_frame": 0
+    },
+    {
+      "row": 4,
+      "state": "jumping",
+      "strategy": "repeat-state-medoid",
+      "selected_frame": 1
+    },
+    {
+      "row": 5,
+      "state": "failed",
+      "strategy": "repeat-state-medoid",
+      "selected_frame": 2
+    },
+    {
+      "row": 6,
+      "state": "waiting",
+      "strategy": "repeat-state-medoid",
+      "selected_frame": 5
+    },
+    {
+      "row": 7,
+      "state": "running",
+      "strategy": "repeat-state-medoid",
+      "selected_frame": 5
+    },
+    {
+      "row": 8,
+      "state": "review",
+      "strategy": "repeat-state-medoid",
+      "selected_frame": 4
+    },
+    {
+      "row": 9,
+      "state": "look-a",
+      "strategy": "preserve-direction-cells",
+      "selected_frame": null
+    },
+    {
+      "row": 10,
+      "state": "look-b",
+      "strategy": "preserve-direction-cells",
+      "selected_frame": null
+    }
+  ]
+}
