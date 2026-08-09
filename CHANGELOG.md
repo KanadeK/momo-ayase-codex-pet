@@ -2,6 +2,15 @@
 
 All notable changes are recorded here.
 
+## 0.1.2 — 2026-08-08
+
+- Make the tracked-asset release check work in Windows sandbox and shared-drive
+  checkouts by scoping Git's `safe.directory` override to the exact repository.
+- Preserve Git command diagnostics in the release-gate JSON instead of
+  returning an unexplained empty forbidden-file list.
+- Add regression coverage for both the scoped Git invocation and its failure
+  report.
+
 ## 0.1.1 — 2026-07-31
 
 - Make `.codex-pet`, bundle ZIP, wheel, sdist, and reports byte-reproducible

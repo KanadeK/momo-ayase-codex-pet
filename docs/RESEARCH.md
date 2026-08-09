@@ -42,6 +42,18 @@ The sampled lists included:
 No Momo Ayase implementation was found in the searched repository and code
 indexes on 2026-07-30.
 
+### Duplicate-search refresh
+
+The GitHub searches were refreshed on **2026-08-08** (America/Los_Angeles)
+before the v0.1.2 release. A repository search for `"Momo Ayase"` returned
+only this repository. After excluding it, no other indexed Momo Ayase Codex pet
+remained. The exact code search `"Momo Ayase" "spriteVersionNumber"` and the
+tool-gap searches `PetEase reduced motion spritesheet` and
+`"compile-reduced" "codex-pet"` returned no matches.
+
+This refresh has the same limits as the original search: GitHub search cannot
+prove the absence of private, unindexed, deleted, or newly created work.
+
 Exact GitHub repository searches for `"codex pet" accessibility audit`,
 `"codex pet" reduced motion compiler`, `petease codex pet`, and
 `"codex pet" flicker analyzer` also returned no repositories on that date.
