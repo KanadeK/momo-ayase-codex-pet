@@ -42,14 +42,21 @@ def run_command(arguments: list[str]) -> dict[str, Any]:
 
 
 def tracked_asset_check() -> dict[str, Any]:
-    result = run_command(["git", "ls-files"])
+    safe_root = ROOT.resolve().as_posix()
+    result = run_command(["git", "-c", f"safe.directory={safe_root}", "ls-files"])
     tracked = result["stdout"].splitlines() if result["ok"] else []
     forbidden = [
         name
         for name in tracked
         if name.startswith("artwork/private-reference/") or name.startswith("artwork/hatch-run/")
     ]
-    return {"ok": result["ok"] and not forbidden, "forbidden": forbidden}
+    return {
+        "ok": result["ok"] and not forbidden,
+        "forbidden": forbidden,
+        "command": result["command"],
+        "returncode": result["returncode"],
+        "stderr": result["stderr"] if not result["ok"] else "",
+    }
 
 
 def gate() -> dict[str, Any]:

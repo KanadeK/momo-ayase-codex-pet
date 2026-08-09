@@ -63,11 +63,11 @@ petease verify-archive dist/momo-ayase.codex-pet
 
 ## Expected release files
 
-- `momo-ayase-v0.1.1.codex-pet`
-- `momo-ayase-reduced-v0.1.1.codex-pet`
-- `momo-ayase-codex-pet-v0.1.1.zip`
-- `petease-0.1.1-py3-none-any.whl`
-- `petease-0.1.1.tar.gz`
+- `momo-ayase-v0.1.2.codex-pet`
+- `momo-ayase-reduced-v0.1.2.codex-pet`
+- `momo-ayase-codex-pet-v0.1.2.zip`
+- `petease-0.1.2-py3-none-any.whl`
+- `petease-0.1.2.tar.gz`
 - `audit.json`
 - `audit.html`
 - `audit.sarif`

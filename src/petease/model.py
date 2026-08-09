@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 
 CELL_WIDTH = 192
 CELL_HEIGHT = 208
